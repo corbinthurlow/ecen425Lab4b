@@ -33,7 +33,8 @@ void main(void)
 void ATask(void)
 {
     printString("Task A started!\n");
-
+	
+	
     printString("Creating low priority task B...\n");
     YKNewTask(BTask, (void *)&BStk[BSTACKSIZE], 7);
 

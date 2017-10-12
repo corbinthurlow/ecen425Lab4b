@@ -49,6 +49,17 @@ YKExitMutex:
 	ret
 
 
+YKIdleTask:
+	push bp	
+	mov bp, sp
+	jmp while1
+
+while1:
+	cli
+	inc word [YKIdleCount]
+	sti
+	jmp while1
+
 
 
 

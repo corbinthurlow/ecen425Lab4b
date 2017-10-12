@@ -25,6 +25,7 @@ void YKScheduler(void);
 void YKDispatcher(int iSaveContext, TCBptr cTask, TCBptr nextTask); //currently not using this ...
 void YKEnterISR();
 void YKExitISR();
+void YKDelayTask(unsigned int count);
 
 
 //#defines

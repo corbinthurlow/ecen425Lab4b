@@ -9,6 +9,7 @@ TCBptr YKCurrTask;						// TCB pointer to the current task
 // Function Prototypes
 void YKIdleTask(void); 			// Idle task, always ready
 void insertReady(TCBptr tmp);	// Insert a TCB to the ready list
+void removeReady(void);			// Remove the current ready TCB
 void YKDispatcherASM();			// Dispatch function written in assembly called from here
 void* ssTemp;					// Temp global to store ss to be able to push and pop it
 // Needed global variables
@@ -103,15 +104,27 @@ void YKNewTask(void (*task)(void), void *taskStack, unsigned int priority){
 }
 
 
+//delay task
+void YKDelayTask(unsigned int count){
+	//int i;
+	//for(i = 0; i < 1000*count; i++){
+	//	printString("Delaying task...\n");	
+	//} 
+	if(count == 0){
+		return;	
+	}
+	removeReady();
+
+
+}
+
+
+
+
 //YAK's idle task. this task does not do much, but spins in a loop and counts.
 // The while loop is exactly 4 lines of of instructions. The YKIdleCount = YKIdleCount
 // takes two instructions. This is fine because YKIdleTask is the only function to 
-// modify YKIdleCount (unless CPU resets it to 0, then there will be a problem)
-void YKIdleTask(void){
-	while(1){
-		
-	}
-}
+// modify YKIdleCount (unless CPU resets it to 0, then there will be a problem
 
 void YKRun(void) {
 	YKKernelStarted = 1;
