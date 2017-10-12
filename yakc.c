@@ -3,22 +3,22 @@
 #include "yakk.h"
 
 
-int IdleTaskStk[IDLE_TASK_STACK_SIZE];	//setting the size of the stack for the idle task
-TCBptr YKCurrTask;			//TCB pointer to the current task
+int IdleTaskStk[IDLE_TASK_STACK_SIZE];	// Setting the size of the stack for the idle task
+TCBptr YKCurrTask;						// TCB pointer to the current task
 
-//Function Prototypes
-void YKIdleTask(void); 			//Idle task, always ready
-void insertReady(TCBptr tmp);	//insert a TCB to the ready list
-void YKDispatcherASM();		//dispatch function written in assembly called from here
-void* ssTemp;				//temp global to store ss to be able to push and pop it
-//needed global variables
-unsigned int YKCtxSwCount;    //variable for tracking context switches
-unsigned int YKTickNum;       //variable incremented by tick handler
-unsigned int YKNestingLevel;  //variable tracking nesting level
-unsigned int YKKernelStarted; //variable indicating kernel has started
-unsigned int YKIdleCount;		//Idle count variable
-//TCB and linkedlist declarations
-TCBptr YKRdyList;  		//a list of TCBs of all ready tasks in order of decreasing priority
+// Function Prototypes
+void YKIdleTask(void); 			// Idle task, always ready
+void insertReady(TCBptr tmp);	// Insert a TCB to the ready list
+void YKDispatcherASM();			// Dispatch function written in assembly called from here
+void* ssTemp;					// Temp global to store ss to be able to push and pop it
+// Needed global variables
+unsigned int YKCtxSwCount;    	// Variable for tracking context switches
+unsigned int YKTickNum;       	// Variable incremented by tick handler
+unsigned int YKNestingLevel;  	// Variable tracking nesting level
+unsigned int YKKernelStarted; 	// Variable indicating kernel has started
+unsigned int YKIdleCount;		// Idle count variable
+// TCB and linkedlist declarations
+TCBptr YKRdyList;  		// a list of TCBs of all ready tasks in order of decreasing priority
 TCBptr YKBlockList; 		//tasks delayed or suspended
 TCBptr YKFreeTCBList;	//a list of available TCBs
 TCB YKTCBArray[MAX_TASKS+1]; //array to allocate all needed TCBs including idle task
@@ -103,16 +103,13 @@ void YKNewTask(void (*task)(void), void *taskStack, unsigned int priority){
 }
 
 
-
 //YAK's idle task. this task does not do much, but spins in a loop and counts.
+// The while loop is exactly 4 lines of of instructions. The YKIdleCount = YKIdleCount
+// takes two instructions. This is fine because YKIdleTask is the only function to 
+// modify YKIdleCount (unless CPU resets it to 0, then there will be a problem)
 void YKIdleTask(void){
 	while(1){
-	
-		//TODO: Try to get this down to four instructions per iteration
-		//QUESTION: Do we want to write this in ASM?
-		YKEnterMutex();
-		YKIdleCount++;
-		YKExitMutex();
+		
 	}
 }
 
