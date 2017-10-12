@@ -1,75 +1,55 @@
+	%macro save_context_ISR 0
+		push ax
+		push bx
+		push cx
+		push dx
+		push si
+		push di
+		push bp
+		push es
+		push ds
+	%endmacro
+
+	%macro restore_context_ISR 0
+		pop ds
+		pop es
+		pop bp
+		pop di
+		pop si
+		pop dx
+		pop cx
+		pop bx
+		pop ax
+	%endmacro
+
+	%macro EOI_command 0
+		mov al, 0x20
+		out 0x20, al
+	%endmacro
+
 InterruptTick:
-	push ax
-	push bx
-	push cx
-	push dx
-	push si
-	push di
-	push bp
-	push es
-	push ds
+	save_context_ISR
 	sti
 	call InterruptTicker
 	cli
-	mov al, 0x20
-	out 0x20, al
-	pop ds
-	pop es
-	pop bp
-	pop di
-	pop si
-	pop dx
-	pop cx 
-	pop bx
-	pop ax
+	EOI_command
+	restore_context_ISR
 	iret
+
 InterruptKeyboard:
-	push ax
-	push bx
-	push cx
-	push dx
-	push si
-	push di
-	push bp
-	push es
-	push ds
+	save_context_ISR
 	sti
 	call InterruptKeyboarder
 	cli
-	mov al, 0x20
-	out 0x20, al
-	pop ds
-	pop es
-	pop bp
-	pop di
-	pop si
-	pop dx
-	pop cx 
-	pop bx
-	pop ax
+	EOI_command
+	restore_context_ISR
 	iret
+
 InterruptReset:
-	push ax
-	push bx
-	push cx
-	push dx
-	push si
-	push di
-	push bp
-	push es
-	push ds
+	save_context_ISR
 	sti
 	call InterruptReseter
 	cli
-	mov al, 0x20
-	out 0x20, al
-	pop ds
-	pop es
-	pop bp
-	pop di
-	pop si
-	pop dx
-	pop cx 
-	pop bx
-	pop ax
+	EOI_command
+	restore_context_ISR
 	iret
