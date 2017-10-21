@@ -13,6 +13,7 @@ void removeReady(void);			// Remove the current ready TCB
 void removeBlocked(TCBptr tmp);	//this will remove a given blocked task from the block list
 void YKDispatcherASM();			// Dispatch function written in assembly called from here
 void* ssTemp;					// Temp global to store ss to be able to push and pop it
+void* bxTemp;
 // Needed global variables
 unsigned int YKCtxSwCount;    	// Variable for tracking context switches
 unsigned int YKTickNum;       	// Variable incremented by tick handler
@@ -200,17 +201,17 @@ void YKTickHandler(){
 	tmp = YKBlockList;
 	//increment YKTickNum
 	YKTickNum++;
-	while(tmp != NULL){
+	while(tmp != NULL){ //){
 		//i think we will need to disable interrupts here since this could be called from an tick....
 		YKEnterMutex(); // still disable even if highest priority? -shawn
 		//set delay_count to the current task we are looking at delay count
 		delay_count = tmp->delay;
 		//if the delay count is more than zero
+		//set tmp2 to tmp next
+		tmp2 = tmp->next;
 		if(delay_count > 0){
 			//decrement the tasks delay count now
 			 tmp->delay = delay_count - 1;
-			 //save tmps next task before removing tmp from blocked list if ready
-			 tmp2 = tmp->next;
 			 if(tmp->delay == 0){
 			 	//set the task state to ready
 			 	tmp->state = READY;
@@ -221,10 +222,7 @@ void YKTickHandler(){
 		}
 		tmp = tmp2;	//go to next blocked task
 		YKExitMutex();
-
 	}
-
-
 
 }
 
@@ -287,7 +285,8 @@ void removeBlocked(TCBptr tmp){
 	tmp->state = READY;
 	//now we will fix the blocked list
 	if(tmp->prev == NULL){	//meaning there was only one blocked and it was tmp
-		tmp->next = YKBlockList;	//set tmp next to the block list now
+		//tmp->next = YKBlockList;	//set tmp next to the block list now
+		YKBlockList = tmp->next;
 	}else{
 		tmp->prev->next = tmp->next;
 	}
@@ -297,7 +296,8 @@ void removeBlocked(TCBptr tmp){
 		tmp->next->prev = tmp->prev;
 	}
 	//assign tmp_local to the ready list
-	tmp_local = YKRdyList;	//will be ahead of idle task
+	tmp_local = YKRdyList;
+	//insertReady(tmp);	//will be ahead of idle task
 	//while the ready list has a lower priorit than the tmp passed in move tmp_local up in the list
 	while(tmp_local->priority < tmp->priority){	
 		tmp_local = tmp_local->next;

@@ -83,21 +83,26 @@ void CTask(void)
 
 /*********************************************APPLICATION CODE FOR LAB 4 PART C********************************/
 
+
+
 #include "clib.h"
 #include "yakk.h"
 
-#define STACKSIZE 256          /* Size of task's stack in words */
+#define STACKSIZE 256          // Size of task's stack in words 
 
-int TaskStack[STACKSIZE];      /* Space for task's stack */
+int TaskStack[STACKSIZE];      // Space for task's stack 
 
-void Task(void);               /* Function prototype for task code */
+void Task(void);               // Function prototype for task code */
+
+void Task1(void);
 
 void main(void)
 {
     YKInitialize();
     
     printString("Creating task...\n");
-    YKNewTask(Task, (void *) &TaskStack[STACKSIZE], 0);
+    YKNewTask(Task, (void *) &TaskStack[STACKSIZE], 1);
+    //YKNewTask(Task1,(void *) &TaskStack[STACKSIZE],0);
 
     printString("Starting kernel...\n");
     YKRun();
@@ -129,5 +134,31 @@ void Task(void)
     }
 }
 
+/*void Task1(void){
 
+    unsigned idleCount;
+    unsigned numCtxSwitches;
+
+    printString("Task1 started.\n");
+    while (1)
+    {
+        printString("Delaying task1...\n");
+
+        YKDelayTask(6);
+
+        YKEnterMutex();
+        numCtxSwitches = YKCtxSwCount;
+        idleCount = YKIdleCount;
+        YKIdleCount = 0;
+        YKExitMutex();
+
+        printString("Task1 running after ");
+        printUInt(numCtxSwitches);
+        printString(" context switches! YKIdleCount is ");
+        printUInt(idleCount);
+        printString(".\n");
+    }
+
+}
+*/
 /******************************************************************************/

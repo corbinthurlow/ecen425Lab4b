@@ -32,10 +32,14 @@
 %endmacro
 
 YKDispatcherASM:
-	cmp word[saveContext], 0
-	je YKDispatcher1
+	mov [bxTemp], bx
+	pop bx
 	pushf
 	push cs
+	push bx
+	mov bx, [bxTemp]
+	cmp word[saveContext], 0
+	je YKDispatcher1
 	save_context
 YKDispatcher1:
 	YKDispatcher1_run
