@@ -36,20 +36,22 @@ InterruptTick:
 	cli
 	EOI_command
 	call YKExitISR			; call YKExitISR before iret command 
-	cli	
+	;cli I think remove- shawn	
 	restore_context_ISR
 	iret
 
 InterruptKeyboard:
 	save_context_ISR
+	call YKEnterISR			;call enter isr at beginning of isr - shawn
 	sti
 	call InterruptKeyboarder
 	cli
 	EOI_command
+	call YKExitISR			; call YKExitISR before iret command - shawn
 	restore_context_ISR
 	iret
 
-InterruptReset:
+InterruptReset: ; since this will terminate program, we don't need to save context and all that. just call InterruptReseter - shawn
 	save_context_ISR
 	sti
 	call InterruptReseter

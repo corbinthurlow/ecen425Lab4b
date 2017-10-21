@@ -41,10 +41,10 @@ void YKInitialize(void){
 	YKTCBArray[MAX_TASKS].next = NULL; 		//last task is idle task
 	
 
-	YKCtxSwCount = 0;	//init switch count to zero
-	YKIdleCount = 0;	//init idlecount to zero
-	YKTickNum = 0;		//init tick number to zero
-	YKNestingLevel = 0;	//init nesting level to 0
+	YKCtxSwCount = 0;		//init switch count to zero
+	YKIdleCount = 0;		//init idlecount to zero
+	YKTickNum = 0;			//init tick number to zero
+	YKNestingLevel = 0;		//init nesting level to 0
 	YKKernelStarted = 0;	//variable used to tell of kernel has started
 
 	
@@ -90,7 +90,7 @@ void YKNewTask(void (*task)(void), void *taskStack, unsigned int priority){
 	YKFreeTCBList->delay = 0;
 
 	//remove this TCB form AvailTCBList
-	newTaskPtr = YKFreeTCBList;
+	newTaskPtr = YKFreeTCBList; // redundant - shawn?
     YKFreeTCBList = newTaskPtr->next;
 
 	//
@@ -165,7 +165,7 @@ void YKScheduler(void) {
 	}
 
 	//check interrupt nesting level, if greater than 0, don't save context
-	if(YKNestingLevel == 0 && YKCurrTask != NULL){
+	if(YKNestingLevel == 0 && YKCurrTask != NULL){ // we are not in interrupts - shawn
 		saveContext = 1;
 	} else {
 		saveContext = 0;
@@ -178,7 +178,7 @@ void YKScheduler(void) {
 	
 	//assign new status to task
 	if(oldTask != NULL) 
-		oldTask->state = READY;
+		oldTask->state = READY; // need to consider if old task blocked itself. We don't want to make it ready here - shawn
 	
 	YKCurrTask->state = RUNNING;
 	
@@ -202,7 +202,7 @@ void YKTickHandler(){
 	YKTickNum++;
 	while(tmp != NULL){
 		//i think we will need to disable interrupts here since this could be called from an tick....
-		YKEnterMutex();
+		YKEnterMutex(); // still disable even if highest priority? -shawn
 		//set delay_count to the current task we are looking at delay count
 		delay_count = tmp->delay;
 		//if the delay count is more than zero
@@ -239,15 +239,15 @@ void insertReady(TCBptr tmp) {
 
 	tmp->state = READY;
 
-    if (YKRdyList == NULL) { /* is this first insertion? */
+    if (YKRdyList == NULL) { /* is this first insertion? YKIdleTask - shawn */
 		YKRdyList = tmp;
 		YKRdyList->next = NULL;
 		YKRdyList->prev = NULL;
     } else { /* not first insertion */
 		tmp2 = YKRdyList;	/* insert in sorted ready list */
-		while (tmp2->priority < tmp->priority)
+		while (tmp2->priority < tmp->priority) /* While current priority is higher than inserting prio - shawn*/
 			tmp2 = tmp2->next;	/* assumes idle task is at end */
-		if (tmp2->prev == NULL)	/* insert in list before tmp2 */
+		if (tmp2->prev == NULL)	/* insert in list before tmp2 */ //This TCB is highest priority - shawn
 			YKRdyList = tmp;
 		else
 			tmp2->prev->next = tmp;
@@ -274,7 +274,7 @@ void removeReady(void){
 	YKBlockList = tmp;
 	tmp->prev = NULL;
 	if(tmp->next != NULL){
-		tmp->next->prev = tmp;
+		tmp->next->prev = tmp; // pointing to self - Shawn
 	}
 
 
