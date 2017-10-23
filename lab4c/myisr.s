@@ -36,7 +36,6 @@ InterruptTick:
 	cli
 	EOI_command
 	call YKExitISR			; call YKExitISR before iret command 
-	;cli I think remove- shawn	
 	restore_context_ISR
 	iret
 
