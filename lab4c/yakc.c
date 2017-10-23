@@ -92,7 +92,7 @@ void YKNewTask(void (*task)(void), void *taskStack, unsigned int priority){
 
 	//remove this TCB form AvailTCBList
 	newTaskPtr = YKFreeTCBList; // redundant - shawn?
-    YKFreeTCBList = newTaskPtr->next;
+   	YKFreeTCBList = newTaskPtr->next;
 
 	//
 	insertReady(newTaskPtr);
@@ -234,9 +234,8 @@ void YKTickHandler(){
  */ 
 void insertReady(TCBptr tmp) {
 	TCBptr tmp2;
-
+	
 	tmp->state = READY;
-
     if (YKRdyList == NULL) { /* is this first insertion? YKIdleTask - shawn */
 		YKRdyList = tmp;
 		YKRdyList->next = NULL;
@@ -265,7 +264,6 @@ void removeReady(void){
 	TCBptr tmp2,tmp; //set up tmp TCBptrs
 	tmp = YKRdyList;	//set tmp tp the ready TCB
 	tmp->state = BLOCKED; //set the tmp state to Blocked
-
 	YKRdyList = tmp->next;	//then set tmp next to be ready 
 	tmp->next->prev = NULL;	//set tmp's next prev to null
 	tmp->next = YKBlockList;

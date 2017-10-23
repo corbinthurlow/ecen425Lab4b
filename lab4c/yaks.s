@@ -32,12 +32,12 @@
 %endmacro
 
 YKDispatcherASM:
-	mov [bxTemp], bx
-	pop bx
-	pushf
-	push cs
-	push bx
-	mov bx, [bxTemp]
+	mov [bxTemp], bx 	; This simply saves bx
+	pop bx 				;we will pop the ip into bx here
+	pushf 				;push the flags
+	push cs 			; push cs
+	push bx 			;push bx which is holding the ip
+	mov bx, [bxTemp] 	;restore bx value 
 	cmp word[saveContext], 0
 	je YKDispatcher1
 	save_context
@@ -54,7 +54,8 @@ YKExitMutex:
 
 
 YKIdleTask:
-	push bp	
+	push bp
+	push ax	
 	mov bp, sp
 	jmp while1
 
@@ -63,7 +64,3 @@ while1:
 	inc word [YKIdleCount]
 	sti
 	jmp while1
-
-
-
-
