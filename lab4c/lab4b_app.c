@@ -91,7 +91,7 @@ void CTask(void)
 #define STACKSIZE 256          // Size of task's stack in words 
 
 int TaskStack[STACKSIZE];      // Space for task's stack 
-int TaskStack1[STACKSIZE];	   // Space for task1's stack
+//int TaskStack1[STACKSIZE];	   // Space for task1's stack
 
 void Task(void);               // Function prototype for task code */
 
@@ -103,7 +103,7 @@ void main(void)
     
     printString("Creating task...\n");
     YKNewTask(Task, (void *) &TaskStack[STACKSIZE], 1);
-    YKNewTask(Task1,(void *) &TaskStack1[STACKSIZE],0);
+    //YKNewTask(Task1,(void *) &TaskStack1[STACKSIZE],0);
 
     printString("Starting kernel...\n");
     YKRun();
@@ -135,7 +135,7 @@ void Task(void)
     }
 }
 
-void Task1(void){
+/*void Task1(void){
 
     unsigned idleCount;
     unsigned numCtxSwitches;
@@ -161,5 +161,6 @@ void Task1(void){
     }
 
 }
+*/
 
 /*****************************************************************************/

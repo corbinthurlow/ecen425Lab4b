@@ -29,10 +29,13 @@
 
 InterruptTick:
 	save_context_ISR
+	call YKEnterISR
 	sti
+	call YKTickHandler
 	call InterruptTicker
 	cli
 	EOI_command
+	call YKExitISR
 	restore_context_ISR
 	iret
 
