@@ -30,8 +30,8 @@
 InterruptTick:
 	save_context_ISR
 	call YKEnterISR
+	call YKTickHandler	
 	sti
-	call YKTickHandler
 	call InterruptTicker
 	cli
 	EOI_command
@@ -41,10 +41,12 @@ InterruptTick:
 
 InterruptKeyboard:
 	save_context_ISR
+	call YKEnterISR
 	sti
 	call InterruptKeyboarder
 	cli
 	EOI_command
+	call YKExitISR
 	restore_context_ISR
 	iret
 

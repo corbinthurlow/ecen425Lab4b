@@ -221,7 +221,7 @@ void YKTickHandler(){
 			 }
 		}
 		tmp = tmp2;	//go to next blocked task
-		YKExitMutex();
+		//YKExitMutex();
 	}
 
 }
